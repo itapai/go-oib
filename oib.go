@@ -7,17 +7,19 @@ import (
 	"strconv"
 )
 
-func IsValid(code string) error {
-	match, err := regexp.MatchString("^[0-9]{11}$", code)
-	if err != nil {
-		return fmt.Errorf("invalid oib: %s", err)
-	}
+func Generate() string {
+	s := fmt.Sprintf("%010d", rand.Int63n(1e10))
 
-	if !match {
+	return fmt.Sprintf("%s%s", s, checksum(s))
+}
+
+func IsValid(code string) error {
+	pattern := regexp.MustCompile("^[0-9]{11}$")
+	if !pattern.MatchString(code) {
 		return fmt.Errorf("invalid oib: bad format")
 	}
 
-	checksum := Checksum(code)
+	checksum := checksum(code)
 	lastDigit := string(code[10])
 
 	if checksum != lastDigit {
@@ -27,7 +29,7 @@ func IsValid(code string) error {
 	return nil
 }
 
-func Checksum(code string) string {
+func checksum(code string) string {
 	checksum := 10
 
 	for i := 0; i < 10; i++ {
@@ -49,10 +51,4 @@ func Checksum(code string) string {
 	}
 
 	return fmt.Sprintf("%d", checksum)
-}
-
-func New() string {
-	s := fmt.Sprintf("%010d", rand.Int63n(1e10))
-
-	return fmt.Sprintf("%s%s", s, Checksum(s))
 }
