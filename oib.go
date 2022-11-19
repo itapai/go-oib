@@ -11,9 +11,7 @@ func Generate() string {
 	random := fmt.Sprintf("%010d", rand.Int63n(1e10))
 	checksum := checksum(random)
 
-	code := fmt.Sprintf("%s%s", random, checksum)
-
-	return code
+	return fmt.Sprintf("%s%s", random, checksum)
 }
 
 func IsValid(code string) error {
