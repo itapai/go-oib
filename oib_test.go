@@ -16,6 +16,7 @@ func TestGenerate(t *testing.T) {
 		t.Errorf("Expected %v, got %v", true, valid)
 	}
 }
+
 func TestIsValid(t *testing.T) {
 	cases := []struct {
 		code string
