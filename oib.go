@@ -8,9 +8,12 @@ import (
 )
 
 func Generate() string {
-	s := fmt.Sprintf("%010d", rand.Int63n(1e10))
+	random := fmt.Sprintf("%010d", rand.Int63n(1e10))
+	checksum := checksum(random)
 
-	return fmt.Sprintf("%s%s", s, checksum(s))
+	code := fmt.Sprintf("%s%s", random, checksum)
+
+	return code
 }
 
 func IsValid(code string) error {
@@ -20,9 +23,9 @@ func IsValid(code string) error {
 	}
 
 	checksum := checksum(code)
-	lastDigit := string(code[10])
+	match := string(code[10])
 
-	if checksum != lastDigit {
+	if checksum != match {
 		return fmt.Errorf("invalid oib: bad checksum")
 	}
 
@@ -30,25 +33,25 @@ func IsValid(code string) error {
 }
 
 func checksum(code string) string {
-	checksum := 10
+	current := 10
 
 	for i := 0; i < 10; i++ {
 		n, _ := strconv.Atoi(string(code[i]))
 
-		checksum += n
-		checksum %= 10
-		if checksum == 0 {
-			checksum = 10
+		current += n
+		current %= 10
+		if current == 0 {
+			current = 10
 		}
 
-		checksum *= 2
-		checksum %= 11
+		current *= 2
+		current %= 11
 	}
 
-	checksum = 11 - checksum
-	if checksum == 10 {
-		checksum = 0
+	current = 11 - current
+	if current == 10 {
+		current = 0
 	}
 
-	return fmt.Sprintf("%d", checksum)
+	return fmt.Sprintf("%d", current)
 }
