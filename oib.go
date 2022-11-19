@@ -18,7 +18,7 @@ func IsValid(code string) error {
 	}
 
 	checksum := Checksum(code)
-	lastDigit, _ := strconv.Atoi(string(code[10]))
+	lastDigit := string(code[10])
 
 	if checksum != lastDigit {
 		return fmt.Errorf("invalid oib: bad checksum")
@@ -27,7 +27,7 @@ func IsValid(code string) error {
 	return nil
 }
 
-func Checksum(code string) int {
+func Checksum(code string) string {
 	checksum := 10
 
 	for i := 0; i < 10; i++ {
@@ -48,11 +48,11 @@ func Checksum(code string) int {
 		checksum = 0
 	}
 
-	return checksum
+	return fmt.Sprintf("%d", checksum)
 }
 
 func New() string {
 	s := fmt.Sprintf("%010d", rand.Int63n(1e10))
 
-	return fmt.Sprintf("%s%d", s, Checksum(s))
+	return fmt.Sprintf("%s%s", s, Checksum(s))
 }
